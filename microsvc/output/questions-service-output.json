@@ -1,0 +1,42 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:ap-south-1:984749408386:stack/BravoSafetyEssentialsQuestionsService-Stack/1692c430-cab5-11ea-ada7-0a60c7dae728",
+            "StackName": "BravoSafetyEssentialsQuestionsService-Stack",
+            "ChangeSetId": "arn:aws:cloudformation:ap-south-1:984749408386:changeSet/awscli-cloudformation-package-deploy-1595268970/f34ffe23-6d7f-411c-90cd-edba0e3544eb",
+            "Description": "A stack that gives safety-essentials.com users the ability to submit a question to the Safety Essentials team regarding one of the item.",
+            "Parameters": [
+                {
+                    "ParameterKey": "AdministratorEmailAddress",
+                    "ParameterValue": "padalia.nitin@gmail.com"
+                }
+            ],
+            "CreationTime": "2020-07-20T18:16:10.520000+00:00",
+            "LastUpdatedTime": "2020-07-20T18:16:15.836000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_COMPLETE",
+            "DisableRollback": false,
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "QuestionsApiEndpoint",
+                    "OutputValue": "https://lsa7ql86qk.execute-api.ap-south-1.amazonaws.com/prod",
+                    "Description": "REPLACE_ME_QUESTIONS_API_ENDPOINT"
+                },
+                {
+                    "OutputKey": "QuestionsRestApiId",
+                    "OutputValue": "lsa7ql86qk",
+                    "Description": "REPLACE_ME_QUESTIONS_REST_API_ID"
+                }
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

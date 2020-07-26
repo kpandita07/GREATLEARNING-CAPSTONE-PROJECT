@@ -1,0 +1,223 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A stack that gives safety-essentials.com users the ability to submit
+  a question to the Safety Essentials team regarding one of the item.
+Parameters:
+  AdministratorEmailAddress:
+    Type: String
+    Default: EMAIL_ADDRESS_REQUIRED
+    Description: The email address that should receive the newly posted questions.
+Resources:
+  ItemsPostQuestionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ItemsPostQuestionFunction
+      Handler: itemsPostQuestion.postQuestion
+      Runtime: python3.6
+      CodeUri: s3://bravo-contact-us-service-code-bucket/ffb230c1280763eb43ab91e79249e014
+      Description: A microservice Lambda function that receives a new question submitted
+        to the SafetyEssentials website from a user and inserts it into a DynamoDB
+        database table.
+      Tracing: Active
+      MemorySize: 128
+      Timeout: 30
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - dynamodb:PutItem
+          Resource:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:dynamodb:'
+              - Ref: AWS::Region
+              - ':'
+              - Ref: AWS::AccountId
+              - :table/BravoSafetyEssentialsQuestionsTable
+        - Effect: Allow
+          Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+          - xray:GetSamplingRules
+          - xray:GetSamplingTargets
+          - xray:GetSamplingStatisticSummaries
+          Resource: '*'
+  QuestionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: BravoSafetyEssentialsQuestionsTable
+      AttributeDefinitions:
+      - AttributeName: QuestionId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: QuestionId
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: '5'
+        WriteCapacityUnits: '5'
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+  BravoSafetyEssentialsQuestionsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: BravoSafetyEssentialsQuestionsTopic
+      Subscription:
+      - Endpoint:
+          Ref: AdministratorEmailAddress
+        Protocol: email
+      TopicName: BravoSafetyEssentialsQuestionsTopic
+  ItemsProcessQuestionStreamFunction:
+    Type: AWS::Serverless::Function
+    DependsOn:
+    - BravoSafetyEssentialsQuestionsTopic
+    Properties:
+      FunctionName: ItemsProcessQuestionStreamFunction
+      Handler: itemsProcessStream.processStream
+      Runtime: python3.6
+      CodeUri: s3://bravo-contact-us-service-code-bucket/68212a1eac1ca5d2a845d56fb1f56934
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN:
+            Ref: BravoSafetyEssentialsQuestionsTopic
+      Description: An AWS Lambda function that will process all new questions posted
+        to SafetyEssentials site and notify the site administrator of the question
+        that was asked.
+      Tracing: Active
+      MemorySize: 128
+      Timeout: 30
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - sns:Publish
+          Resource:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:sns:'
+              - Ref: AWS::Region
+              - ':'
+              - Ref: AWS::AccountId
+              - :BravoSafetyEssentialsQuestionsTopic
+        - Effect: Allow
+          Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+          - xray:GetSamplingRules
+          - xray:GetSamplingTargets
+          - xray:GetSamplingStatisticSummaries
+          Resource: '*'
+      Events:
+        DynamoDBQuestionsStream:
+          Type: DynamoDB
+          Properties:
+            Stream:
+              Fn::GetAtt:
+              - QuestionsTable
+              - StreamArn
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
+  QuestionsApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: apigateway.amazonaws.com
+          Action: sts:AssumeRole
+  QuestionsApiPolicy:
+    Type: AWS::IAM::Policy
+    DependsOn:
+    - QuestionsApiRole
+    - ItemsPostQuestionFunction
+    Properties:
+      PolicyName: questions_api_policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action:
+          - lambda:InvokeFunction
+          Resource:
+            Fn::GetAtt:
+            - ItemsPostQuestionFunction
+            - Arn
+      Roles:
+      - Ref: QuestionsApiRole
+  QuestionsApi:
+    Type: AWS::Serverless::Api
+    DependsOn:
+    - QuestionsApiRole
+    - ItemsPostQuestionFunction
+    Properties:
+      EndpointConfiguration: REGIONAL
+      StageName: prod
+      Cors:
+        AllowOrigin: '''*'''
+        AllowHeaders: '''Content-Type'''
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title:
+            Ref: AWS::StackName
+        paths:
+          /questions:
+            post:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  statusCode: 200
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type'''
+                      method.response.header.Access-Control-Allow-Methods: '''OPTIONS,
+                        POST'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                credentials:
+                  Fn::GetAtt:
+                  - QuestionsApiRole
+                  - Arn
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Join:
+                  - ''
+                  - - 'arn:aws:apigateway:'
+                    - Ref: AWS::Region
+                    - :lambda:path/2015-03-31/functions/
+                    - Fn::GetAtt:
+                      - ItemsPostQuestionFunction
+                      - Arn
+                    - /invocations
+Outputs:
+  QuestionsApiEndpoint:
+    Description: REPLACE_ME_QUESTIONS_API_ENDPOINT
+    Value:
+      Fn::Join:
+      - ''
+      - - https://
+        - Ref: QuestionsApi
+        - .execute-api.
+        - Ref: AWS::Region
+        - .amazonaws.com/prod
+  QuestionsRestApiId:
+    Description: REPLACE_ME_QUESTIONS_REST_API_ID
+    Value:
+      Ref: QuestionsApi

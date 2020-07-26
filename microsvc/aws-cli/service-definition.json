@@ -1,0 +1,30 @@
+{
+  "serviceName": "SafetyEssentials-Service",
+  "cluster": "BravoSafetyEssentials-Cluster",
+  "launchType": "FARGATE",
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 0
+  },
+  "desiredCount": 1,
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "assignPublicIp": "DISABLED",
+      "securityGroups": [
+        "sg-0dc284108152f9fc7"
+      ],
+      "subnets": [
+        "subnet-03d157e54c10bd068",
+        "subnet-0723498064d218543"
+      ]
+    }
+  },
+  "taskDefinition": "safetyessentialsservice",
+  "loadBalancers": [
+    {
+      "containerName": "SafetyEssentials-Service",
+      "containerPort": 8080,
+      "targetGroupArn": "arn:aws:elasticloadbalancing:ap-south-1:984749408386:targetgroup/SafetyEssentials-TargetGroup/ea7d86d762d34161"
+    }
+  ]
+}

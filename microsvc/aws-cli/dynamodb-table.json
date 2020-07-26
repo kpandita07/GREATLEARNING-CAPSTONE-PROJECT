@@ -1,0 +1,69 @@
+{
+  "TableName": "BravoSafetyEssentials",
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  },
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "ItemId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "Category",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "PriceRange",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "ItemId",
+      "KeyType": "HASH"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "CategoryIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "Category",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "ItemId",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    },
+    {
+      "IndexName": "PriceRangeIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "PriceRange",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "ItemId",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    }
+  ]
+}

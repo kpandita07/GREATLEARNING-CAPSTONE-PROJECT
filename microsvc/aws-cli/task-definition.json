@@ -1,0 +1,32 @@
+{
+  "family": "safetyessentialsservice",
+  "cpu": "256",
+  "memory": "512",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "executionRoleArn": "arn:aws:iam::984749408386:role/BravoSafetyEssentialsCoreStack-EcsServiceRole-1DDZ4M6TKH1K2",
+  "taskRoleArn": "arn:aws:iam::984749408386:role/BravoSafetyEssentialsCoreStack-ECSTaskRole-UACGYP3ZVMQ3",
+  "containerDefinitions": [
+    {
+      "name": "SafetyEssentials-Service",
+      "image": "984749408386.dkr.ecr.ap-south-1.amazonaws.com/safetyessentials/service:latest",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "http"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "bravo-safetyessentials-logs",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "awslogs-safetyessentials-service"
+        }
+      },
+      "essential": true
+    }
+  ]
+}

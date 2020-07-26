@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Safety Essentials</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.135.0.min.js"></script>
+    <script src="js/aws-cognito-sdk.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+  </head>
+  <body ng-app="itemsApp" style="background-color:#EBEBEB">
+    <style>
+      @media (max-width: 800px) {
+      	img {
+          max-width: 300px;
+      	}
+      }
+    </style>
+    <br>
+    <div style="text-align: center">
+      <img src="images/Covid-Essentials.jfif" width="600px" align="center">
+    </div>
+    <br>
+    <div class="container">
+      <div class='btn-toolbar float-right'>
+          <button type="button" id="logInButton" class="btn btn-info btn-lg" data-toggle="modal" data-target="#loginModal">Log In / Register</button>
+          &nbsp;
+          <button type="button" id="logOutButton" class="btn btn-danger btn-lg d-none">Log Out</button>
+          &nbsp;
+        <button type="button" id="askQuestionButton" class="btn btn-success btn-lg" data-toggle="modal" data-target="#questionModal">Contact Us</button>
+      </div>
+  </div>
+  <br>
+  <br>
+  <hr>
+  <span style="text-align: center;">
+    <p>
+      It has been on a mission to make wellness a part of every home for more than 8 decades. We want to be known as the most trusted brand providing scientific healthcare solutions. Loved by our customers for our ethics, values, and commitment to sustainability.
+      <br>
+      <p>
+        <b>Our vision:</b> Bring wellness and joy to every home via solutions based on science.
+        <br>
+        <br>
+        <b>Out mission:</b>
+        Develop markets worldwide with an in-depth and long-term approach, maintaining at each step the highest ethical standards.
+      </p>
+    </p>
+  </span>
+  <hr>
+  <br>
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+        </div>
+  
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <form id="loginForm">
+            <input type="text" id ="email" name="email" placeholder="Email" />
+            <input type="password" id="pwd" name="pwd" placeholder="Password" />
+            <input type="submit" id="login-modal-button" name="login" class="btn btn-info" value="Login"/ >
+          </form>
+          <div class="login-help">
+            <a href="register.html">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+          </div>
+  
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <form id="questionForm">
+              <label for="questionModalEmail">Email Address:</label>
+              <input type="text" id ="questionModalEmail" name="questionModalEmail" placeholder="Email" />
+              <br>
+              <br>
+              <label for="questionModalQuestionText">Question/Comment:</label>
+              <textarea class="form-control" id="questionModalQuestionText" ></textarea>
+              <br>
+              <input type="submit" id="question-modal-button" name="questionButton" class="btn btn-info" value="Submit" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container" ng-controller="safetyEssentialsFilterController">
+      <div id="filterMenu">
+        <ul class="nav nav-pills">
+          &nbsp;
+          <li class="nav-item dropdown" ng-repeat="filterCategory in filterOptionsList.categories">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#!" role="button" aria-haspopup="true" aria-expanded="false">{{filterCategory.title}}</a>
+            <div class="dropdown-menu" >
+              <button class="dropdown-item" ng-repeat="filterCategorySelection in filterCategory.selections" ng-click="queryItems(filterCategory.title, filterCategorySelection)">{{filterCategorySelection}}</button>
+            </div>
+          </li>
+          &nbsp;
+          <li class="nav-item " >
+            <button type="button" class="btn btn-success" ng-click="removeFilter()">View All</button>
+          </li>
+          &nbsp;
+          <li class="nav-item " >
+            <button type="button" class="btn btn-success" ng-controller="safetyEssentialsLoginController">
+              <i class="fa fa-shopping-cart" style="font-size:20px"></i>
+              <span id="cartitem" class="badge badge-light" ng-click="updateUserCart()">{{cartItems}}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <div class="container">
+      <div id="itemGrid" class="row" ng-controller="safetyEssentialsListController">
+          <div class="col-md-4 border border-warning" ng-repeat="item in items">
+              <br>
+              <p align="center">
+                <strong> {{item.name}}</strong>
+                <br>
+                <img src="{{item.thumbImageUri}}" alt="{{item.Name}}">
+                <br>
+                <br>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" data-itemid="{{item.itemId}}">View Details</button>
+              </p>
+              <p>
+                <br>
+                <b>Category:</b> {{item.category}}
+                <br>
+                <b>Price:</b> {{item.price}}
+              </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade bd-example-modal-lg" id="profileModal" tabindex="-1" aria-hidden="true" ng-controller="itemProfileController">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h3>Item Detail</h3>
+              <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+              </button>
+            </div>
+          <!-- Modal Body -->
+            <div class="modal-body">
+              <p align="center">
+                <img id="profileImage" src="{{profileItem.profileImageUri}}" align="center" />
+              </p>
+              <br>
+              <p id="profileName"><b>Name:</b> {{profileItem.name}}</p>
+              <p id="profileCategory"><b>Species:</b> {{profileItem.category}}</p>
+              <p id="profilePrice"><b>Price:</b> {{profileItem.price}} </p>
+              <p id="profileDescription"><b>Description:</b> {{profileItem.description}}</p>
+              <p align="center">
+                <button id="adoptButton" align="center" type="button" ng-click="addToCart(profileItem.itemId)" class="btn btn-primary">Add to Cart</button>
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           </div>
+          </div>
+        </div>
+      </div>
+  </body>
+  <script>
+
+    var itemsApiEndpoint = 'https://e8pzgx5lcf.execute-api.ap-south-1.amazonaws.com/prod';
+    var questionsApiEndpoint = 'https://lsa7ql86qk.execute-api.ap-south-1.amazonaws.com/prod';
+    var awsRegion = 'ap-south-1'
+    var cognitoUserPoolId = 'ap-south-1_dr66fpKGx'
+    var cognitoUserPoolClientId = '5m4p91a3rdt5mljpcut4ej26ei'
+    
+
+    var app = angular.module('itemsApp', []);
+   
+
+    var gridScope;
+    var cartScope;
+    var filterScope;
+
+    initializeStorage();
+
+    function initializeStorage() {
+      var identityPoolId = cognitoUserPoolId;
+      var userPoolId = cognitoUserPoolId; 
+      var clientId = cognitoUserPoolClientId;
+      var loginPrefix = 'cognito-idp.' + awsRegion + '.amazonaws.com/' + identityPoolId;
+
+      localStorage.setItem('identityPoolId', identityPoolId);
+      localStorage.setItem('userPoolId', userPoolId);
+      localStorage.setItem('clientId', clientId);
+      localStorage.setItem('loginPrefix', loginPrefix);
+    }
+
+    $(document).on('click', '#logOutButton', function(event) {
+      localStorage.clear();
+      document.location.reload();
+    });
+
+    var configString = localStorage.getItem("awsConfig");
+    var config = JSON.parse(configString);
+    if(config != null) {
+      refreshAWSCredentials();
+      loggedInDisplay();
+    }
+
+    function loggedInDisplay() {
+      $("#loginModal").modal("hide");
+      $("#logInButton").addClass("d-none");
+      $("#logOutButton").removeClass("d-none");
+      $("#cartitem").trigger("click");
+    }
+
+    function loginUser() {
+
+      var userPoolId = localStorage.getItem('userPoolId');
+      var clientId = localStorage.getItem('clientId');
+      var identityPoolId = localStorage.getItem('identityPoolId');
+      var loginPrefix = localStorage.getItem('loginPrefix');
+      
+      var poolData = {
+        UserPoolId : userPoolId, 
+        ClientId : clientId 
+      };
+      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+      
+      var email = document.getElementById('email').value;
+      var pwd = document.getElementById('pwd').value;
+      
+      var authenticationData =
+      {
+        'UserName': email,
+        'Password': pwd
+      }
+      var userData = {
+        Username : email,
+        Pool : userPool
+      };
+      
+      var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+      var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+          console.log('access token + \n' + result.getAccessToken().getJwtToken());
+      
+          var sessionTokens =
+          {
+            IdToken: result.getIdToken(),
+            AccessToken: result.getAccessToken(),
+            RefreshToken: result.getRefreshToken()
+          };
+          localStorage.setItem('sessionTokens', JSON.stringify(sessionTokens));
+      
+         
+          AWS.config.region = 'ap-south-1';
+          AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId : identityPoolId, // your identity pool id here
+            Logins : {
+              // Change the key below according to the specific region your user pool is in.
+               loginPrefix : sessionTokens.IdToken.jwtToken
+            }
+          });
+          localStorage.setItem('awsConfig', JSON.stringify(AWS.config));
+          localStorage.setItem('email', email);
+      
+          cognitoUser.getUserAttributes(function(err, result) {
+            if (err) {
+                alert(err);
+                return;
+            }
+            for (i = 0; i < result.length; i++) {
+                console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
+                if (result[i].getName() == 'sub') {
+                  console.log('Overwriting userId into local storage');
+                  localStorage.setItem('userId', result[i].getValue());
+                }
+            }
+          });
+      
+          loggedInDisplay();
+        },
+      
+        onFailure: function(err) {
+          alert(err.message);
+        },
+      
+      });
+    }
+
+    $("#loginForm").submit(function(event) {
+      event.preventDefault();
+      loginUser();
+    });
+    app.controller('clearFilterController', function($scope) {
+    });
+
+    app.controller('safetyEssentialsFilterController', function($scope) {
+
+      filterScope = $scope;
+      
+      // The possible options for Mysfits to populate the dropdown filters.
+      $scope.filterOptionsList =
+       {
+         "categories": [
+           {
+             "title": "Category",
+             "selections":  [
+               "Masks",
+               "Disinfectants",
+               "Thermal Scanner"
+             ]
+           },
+           {
+             "title": "PriceRange",
+             "selections":  [
+               "Under Rs 50",
+               "Rs 50 - Rs 200",
+               "Rs 200 - Rs 500",
+               "Rs 500 - Rs 1000",
+               "Rs 1000 - Rs 5000",
+               "Over Rs 5000"
+             ]
+           }
+         ]
+       };
+
+       $scope.removeFilter = function() {
+         allItems = getAllItems(applyGridScope);
+       }
+
+       $scope.queryItems = function(filterCategory, filterValue) {
+
+           var filterCategoryQS = filterCategory
+           console.log(filterCategoryQS, filterValue)
+           var itemsApi = itemsApiEndpoint + '/items?' + 'filter=' + filterCategoryQS + "&value=" + filterValue;
+
+           $.ajax({
+             url : itemsApi,
+             type : 'GET',
+             success : function(response) {
+               applyGridScope(response.items)
+             },
+             error : function(response) {
+               console.log("could not retrieve items list.");
+             }
+           });
+       }
+
+
+
+    });
+
+    app.controller('safetyEssentialsLoginController', function($scope, $rootScope){
+      cartScope = $rootScope;
+      $scope.updateUserCart = function() {
+        console.log("Updating user cart.");
+        updateCart(applyCartScope);
+      }
+
+    });
+    app.controller('safetyEssentialsListController', function($scope, $rootScope) {
+
+      gridScope = $scope;
+      cartScope = $rootScope;
+      getAllItems(applyGridScope);
+      updateCart(applyCartScope);
+    });
+
+    app.controller('itemProfileController', function($scope, $rootScope) {
+
+      profileScope = $scope;
+      cartScope = $rootScope;
+      
+      
+      $scope.addToCart = function(itemId) {
+        console.log("Add to cart clicked: " +  itemId);
+        addItemToCart(itemId);
+        updateCart(applyCartScope);
+      }
+    
+    });
+
+    function applyCartScope(count) {
+      cartScope.cartItems = count;
+      cartScope.$apply();
+    }
+
+    $('#profileModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var itemId = button.data('itemid');
+      console.log('itemid'+itemId)
+      getItem(itemId, updateModalText);
+    });
+
+    function updateModalText(profileItem) {
+
+      applyProfileScope(profileItem);
+      
+      if (profileItem.adopted == true) {
+        console.log('Adopted')
+      } else {
+        console.log('Not Adopted');
+      }
+    
+    }
+
+    function addItemToCart(itemId) {
+
+      try {
+        var itemsApi = itemsApiEndpoint + '/items/' + itemId + "/addtocart";
+      
+        var sessionTokensString = localStorage.getItem('sessionTokens');
+        var userPoolId = localStorage.getItem('userPoolId');
+        var clientId = localStorage.getItem('clientId');
+      
+      
+        var poolData = {
+          UserPoolId : userPoolId, 
+          ClientId : clientId 
+        };
+        var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        const cognitoUser = userPool.getCurrentUser()
+        currentuser = 'Anonymous';
+        if (cognitoUser !== null) {
+          currentuser = cognitoUser.username;
+        }
+        console.log('Current User: '+currentuser);
+
+        var sessionTokens = JSON.parse(sessionTokensString);
+        var IdToken = sessionTokens.IdToken;
+        var idJwt = IdToken.jwtToken;
+        
+        $.ajax({
+          url : itemsApi,
+          async : false,
+          type : 'POST',
+          headers : {'Authorization' : idJwt },
+          data: JSON.stringify({ email: currentuser }),
+          contentType: 'application/json',
+          success : function(response) {
+            console.log("Added item to cart.");
+          },
+          error : function(response) {
+            console.log("could not add item to cart.");
+            if (response.status == "401") {
+               refreshAWSCredentials();
+             }
+          }
+        });
+      } catch (err) {
+        alert("You must be logged in to add an item.");
+        console.log(err.message);
+      }
+
+    }
+
+    function applyProfileScope(item) {
+      profileScope.profileItem = item;
+      profileScope.$apply();
+    }
+
+    function applyGridScope(items) {
+      gridScope.items = items;
+      gridScope.$apply();
+    }
+
+    function getAllItems(callback) {
+
+      var itemsApi = itemsApiEndpoint + '/items';
+
+      $.ajax({
+        url : itemsApi,
+        type : 'GET',
+        success : function(response) {
+          console.log(response.items)
+          callback(response.items);
+        },
+        error : function(response) {
+          console.log("could not retrieve items list.");
+        }
+      });
+    }
+
+    function updateCart(callback) {
+
+      var userPoolId = localStorage.getItem('userPoolId');
+      var clientId = localStorage.getItem('clientId');
+      
+      var poolData = {
+        UserPoolId : userPoolId, 
+        ClientId : clientId 
+      };
+      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+      const cognitoUser = userPool.getCurrentUser()
+      currentuser = 'Anonymous';
+      if (cognitoUser !== null) {
+        currentuser = cognitoUser.username;
+      }
+      console.log('Current User: '+currentuser);
+
+      var itemsApi = itemsApiEndpoint + '/cart?' + 'email=' + currentuser;
+
+      $.ajax({
+        url : itemsApi,
+        type : 'GET',
+        success : function(response) {
+          console.log(response.count)
+          callback(response.count);
+        },
+        error : function(response) {
+          console.log("could not get cart items.");
+        }
+      });
+    }
+
+    function getItem(itemId, callback) {
+
+      var itemsApi = itemsApiEndpoint + '/items/' + itemId;
+      
+      $.ajax({
+        url : itemsApi,
+        type : 'GET',
+        success : function(response) {
+          callback(response);
+        },
+        error : function(response) {
+          console.log("could not retrieve item.");
+        }
+      });
+    }
+
+    $("#questionForm").submit(function(event) {
+      event.preventDefault();
+      $('#questionModal').modal('toggle')
+      var emailAddress = document.getElementById('questionModalEmail').value;
+      var questionText = document.getElementById('questionModalQuestionText').value;
+      submitQuestion(emailAddress, questionText );
+    });
+
+    function submitQuestion(emailAddress, questionToSubmit) {
+
+      var questionsApi = questionsApiEndpoint + '/questions';
+      var question;
+      
+      
+      question = {
+        email: emailAddress,
+        questionText: questionToSubmit
+      }
+      
+      $.ajax({
+        url : questionsApi,
+        type : 'POST',
+        headers : {'Content-Type': 'application/json'},
+        dataType: 'json',
+        data : JSON.stringify(question),
+        success : function(response) {
+          console.log("question submitted!")
+        },
+        error : function(response) {
+          console.log("could not submit question");
+          console.log(response);
+        }
+      });
+    }
+
+    function refreshAWSCredentials() {
+
+      var userPoolId = localStorage.getItem('userPoolId');
+      var clientId = localStorage.getItem('clientId');
+      var identityPoolId = localStorage.getItem('identityPoolId');
+      var loginPrefix = localStorage.getItem('loginPrefix');
+      
+      var poolData = {
+        UserPoolId : userPoolId, 
+        ClientId : clientId 
+      };
+      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+      var cognitoUser = userPool.getCurrentUser();
+      
+      if (cognitoUser != null) {
+            cognitoUser.getSession(function(err, result) {
+                if (result) {
+                    console.log('You are now logged in.');
+                    cognitoUser.refreshSession(result.getRefreshToken(), function(err, result) {
+      
+                        if (err) {//throw err;
+                            console.log('In the err: '+err);
+                        }
+                        else{
+                            localStorage.setItem('awsConfig', JSON.stringify(AWS.config));
+                            var sessionTokens =
+                            {
+                              IdToken: result.getIdToken(),
+                              AccessToken: result.getAccessToken(),
+                              RefreshToken: result.getRefreshToken()
+                            };
+                            localStorage.setItem("sessionTokens", JSON.stringify(sessionTokens));
+      
+                        }
+                    });
+      
+                }
+            });
+        }
+      
+      
+    }
+
+
+  </script>
+</html>

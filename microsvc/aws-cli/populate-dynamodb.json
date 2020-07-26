@@ -1,0 +1,154 @@
+{
+      "BravoSafetyEssentials" : [
+         {
+            "PutRequest": {
+               "Item": {
+                  "ItemId" : {
+                     "S": "4e53920c-505a-4a90-a694-b9300791f0ae"
+                  },
+                  "Name" : {
+                     "S": "3 Ply"
+                  },
+                  "Description" : {
+                     "S": "These Facemasks help limit the spread of germs. When someone talks, coughs, or sneezes they may release tiny drops into the air that can infect others. If someone is suffering illness, face masks can reduce the number of germs that the wearer releases and can protect other people from becoming sick. A face mask also protects the wearer's nose and mouth from splashes or sprays of body fluids. It is ideal for every house in day to day activities as well as doctors, surgeons, dentist, dental assistance, nurses, landscapers, contractors, plumbers, exterminators, nail technicians and many more. All three layers of Face Masks are NON-WOVEN FABRIC only. Masks doesnot gurantee protection from any kind of diseases but may limit the wearer’s exposure to germs that cause these diseases. Masks are a Precautionary and Preventive measure only but not Curative. For External Use Only. Should you feel discomfort in any way after wearing face mask, immediate removal of face mask is advised. For any discomfort for larger duration, contact a Registered Health Medical Practitioner immediately."
+                  },
+                  "Category" : {
+                     "S": "Masks"
+                  },
+                  "Price" : {
+                     "N": "50"
+                  },
+                  "PriceRange": {
+                     "S": "Rs 50 - Rs 200"
+                  },
+                  "ThumbImageUri" : {
+                     "S": "images/3-ply-thumb.png"
+                  },
+                  "ProfileImageUri" : {
+                     "S": "images/3-ply.png"
+                  }
+               }
+            }
+         },
+         {
+            "PutRequest": {
+               "Item": {
+                  "ItemId" : {
+                     "S": "3e53920c-105b-2c11-b321-a2a60791a5ba"
+                  },
+                  "Name" : {
+                     "S": "N95"
+                  },
+                  "Description" : {
+                     "S": "This classic disposable N95 particulate respirator is designed to help provide comfortable, reliable worker respiratory protection against certain non-oil based particles."
+                  },
+                  "Category" : {
+                     "S": "Masks"
+                  },
+                  "Price" : {
+                     "N": "250"
+                  },
+                  "PriceRange": {
+                     "S": "Rs 200 - Rs 500"
+                  },
+                  "ThumbImageUri" : {
+                     "S": "images/kn-95-thumb.png"
+                  },
+                  "ProfileImageUri" : {
+                     "S": "images/kn-95.png"
+                  }
+               }
+            }
+         },
+         {
+            "PutRequest": {
+               "Item": {
+                  "ItemId" : {
+                     "S": "2e93920b-b053-1c1a-13c1-1b260d91421c"
+                  },
+                  "Name" : {
+                     "S": "Hand Sanitizer"
+                  },
+                  "Description" : {
+                     "S": "When there is no water around or it is not possible for you to visit the washroom, sanitizer can act as a saviour. This sanitizer is an effective and alcohol-based hand sanitizer that claims to kill 99.9% of germs and ensures complete hand protection. The sanitizer contains extracts of herbs like Lime and coriander. Coriander has antimicrobial properties and lime acts as a natural bactericidal. The active ingredients of neem keep bacteria, viruses and fungi far away. The sanitizer moreover is made from natural extracts that gently cleanses your hands by providing maximum protection. This also serves as the perfect travel companion, especially when you are travelling with your kids. The ingredients of the product are so effective that they soften your hands and the goodness of lime protects your skin from oxidative damage. It has a refreshing fragrance that makes this product lovable amongst kids too. Hypoallergenic in nature, this product will never lead to any allergic reaction."
+                  },
+                  "Category" : {
+                     "S": "Disinfectants"
+                  },
+                  "Price" : {
+                     "N": "225"
+                  },
+                  "PriceRange": {
+                     "S": "Rs 200 - Rs 500"
+                  },
+                  "ThumbImageUri" : {
+                     "S": "images/hand-sanitizer-thumb.png"
+                  },
+                  "ProfileImageUri" : {
+                     "S": "images/hand-sanitizer.png"
+                  }
+               }
+            }
+         },
+         {
+            "PutRequest": {
+               "Item": {
+                  "ItemId" : {
+                     "S": "92c1b50a-1c34-2a3b-9a2c-2c6a9b31421c"
+                  },
+                  "Name" : {
+                     "S": "UVC Disinfection Box"
+                  },
+                  "Description" : {
+                     "S": "The UV-C disinfectant box is designed for disinfecting personal household and office belonging like mobile phones, tablets, purse, currency, covers of office files, etc. The UV-C disinfectant box comes fitted with the Phillips TUV 11w UVC Lamp which is ideal for disinfecting daily household and office items within few minutes."
+                  },
+                  "Category" : {
+                     "S": "Disinfectants"
+                  },
+                  "Price" : {
+                     "N": "2250"
+                  },
+                  "PriceRange": {
+                     "S": "Rs 1000 - Rs 5000"
+                  },
+                  "ThumbImageUri" : {
+                     "S": "images/uv-box-thumb.jpg"
+                  },
+                  "ProfileImageUri" : {
+                     "S": "images/uv-box.jpg"
+                  }
+               }
+            }
+         },
+         {
+            "PutRequest": {
+               "Item": {
+                  "ItemId" : {
+                     "S": "be6c41d9-5099-4d7d-960e-3307ed4a9985"
+                  },
+                  "Name" : {
+                     "S": "Thermal Scanner"
+                  },
+                  "Description" : {
+                     "S": "Description Item type: Digital Infrared Forehead Thermometer Model: tcpoc-208 Measurement mode: non-contact infrared thermometer Measurement range: 0 ~ 80 ℃ Display accuracy: 0.1 ℃ Detection accuracy: 32.0 ~ 42.9 ° C (+- 0.2 ℃) 0 ° C to 32.0 ° C and 42.9 ° C to 80 ° C (+-1 ℃) Application ambient temperature: 10-40 ℃ / 50-104 ℃ Battery type: 3V (2 AAA dry cells) Display unit: Celsius / Fahrenheit Automatic shutdown: 8 seconds Input voltage: 2.51v Storage capacity: 32 groups Test range: 1-5cm Reaction speed: 0.5s Product net weight: 99g Product size: 16 * 9.5 * 4.5cm Characteristics: contactless forehead Packing list: 1 x Digital Infrared Forehead Thermometer"
+                  },
+                  "Category" : {
+                     "S": "Thermal Scanner"
+                  },
+                  "Price" : {
+                     "N": "1899"
+                  },
+                  "PriceRange": {
+                     "S": "Rs 1000 - Rs 5000"
+                  },
+                  "ThumbImageUri" : {
+                     "S": "images/thermal-scanner-thumb.png"
+                  },
+                  "ProfileImageUri" : {
+                     "S": "images/thermal-scanner.jpg"
+                  }
+               }
+            }
+         }
+      ]
+   }

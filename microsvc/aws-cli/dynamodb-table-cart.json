@@ -1,0 +1,65 @@
+{
+  "TableName": "BravoSafetyEssentialsCart",
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  },
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "User",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "cartId",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "User",
+      "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "cartId",
+      "KeyType": "RANGE"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "KeyIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "User",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "cartId",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    },
+    {
+      "IndexName": "UserIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "User",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    }
+  ]
+}

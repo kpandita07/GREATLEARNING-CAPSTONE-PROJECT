@@ -1,0 +1,30 @@
+{
+    "LoadBalancers": [
+        {
+            "LoadBalancerArn": "arn:aws:elasticloadbalancing:ap-south-1:984749408386:loadbalancer/net/bravo-safety-essentials/8c917a7e25ba416a",
+            "DNSName": "bravo-safety-essentials-8c917a7e25ba416a.elb.ap-south-1.amazonaws.com",
+            "CanonicalHostedZoneId": "ZVDDRBQ08TROA",
+            "CreatedTime": "2020-07-19T20:02:31.105000+00:00",
+            "LoadBalancerName": "bravo-safety-essentials",
+            "Scheme": "internet-facing",
+            "VpcId": "vpc-06cf7a5c4f62dba29",
+            "State": {
+                "Code": "provisioning"
+            },
+            "Type": "network",
+            "AvailabilityZones": [
+                {
+                    "ZoneName": "ap-south-1b",
+                    "SubnetId": "subnet-011f7406854774049",
+                    "LoadBalancerAddresses": []
+                },
+                {
+                    "ZoneName": "ap-south-1a",
+                    "SubnetId": "subnet-0232c581831e8511c",
+                    "LoadBalancerAddresses": []
+                }
+            ],
+            "IpAddressType": "ipv4"
+        }
+    ]
+}
